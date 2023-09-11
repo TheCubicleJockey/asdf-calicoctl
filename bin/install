@@ -41,8 +41,14 @@ platform() {
 }
 
 arch() {
-  [ ! "x86_64" = "$(uname -m)" ] && echo "architecture $(uname -m), is not supported" && exit 1
-  echo -n "amd64"
+  if [ "x86_64" = "$(uname -m)" ]; then
+    echo -n "amd64"
+  elif [ "arm64" = "$(uname -m)" ] && [ $(platform) = "darwin" ]; then
+    echo -n "arm64"
+  else
+    echo "platform $(uname) architecture $(uname -m), is not supported" >&2
+    exit 1
+  fi
 }
 
 install "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
